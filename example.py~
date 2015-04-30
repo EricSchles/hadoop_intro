@@ -1,0 +1,3 @@
+from glob import glob
+
+books = glob("books/*")
