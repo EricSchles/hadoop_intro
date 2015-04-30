@@ -180,8 +180,88 @@ source /etc/profile
 
 ##Running our first real hadoop example
 
+mapper.py:
+
+```
+import sys
+
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+    line = line.strip()
+    # split the line into words
+    words = line.split()
+    # increase counters
+    for word in words:
+        # write the results to STDOUT (standard output);
+        # what we output here will be the input for the
+        # Reduce step, i.e. the input for reducer.py
+        #
+        # tab-delimited; the trivial word count is 1
+        print '%s\t%s' % (word, 1)
+```
+
+Please make sure mapper.py has execute permissions:
+
+`chmod +x mapper.py`
+
+reducer.py:
+
+```
+from operator import itemgetter
+import sys
+
+current_word = None
+current_count = 0
+word = None
+
+# input comes from STDIN
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+    line = line.strip()
+
+    # parse the input we got from mapper.py
+    word, count = line.split('\t', 1)
+
+    # convert count (currently a string) to int
+    try:
+        count = int(count)
+    except ValueError:
+        # count was not a number, so silently
+        # ignore/discard this line
+        continue
+
+    # this IF-switch only works because Hadoop sorts map output
+    # by key (here: word) before it is passed to the reducer
+    if current_word == word:
+        current_count += count
+    else:
+        if current_word:
+            # write result to STDOUT
+            print '%s\t%s' % (current_word, current_count)
+        current_count = count
+        current_word = word
+
+# do not forget to output the last word if needed!
+if current_word == word:
+    print '%s\t%s' % (current_word, current_count)
+```
+
+also, this code will need to be able to execute:
+
+`chmod +x reducer.py`
+
+Running the code on Hadoop:
+```
+bin/hadoop jar contrib/streaming/hadoop-*streaming*.jar \
+-file /home/hduser/mapper.py    -mapper /home/hduser/mapper.py \
+-file /home/hduser/reducer.py   -reducer /home/hduser/reducer.py \
+-input /user/hduser/gutenberg/* -output /user/hduser/gutenberg-output
+```
+
 ##References:
 
 * [How Hadoop works](https://www.cs.duke.edu/courses/fall11/cps216/Lectures/how_hadoop_works.pdf)
 * [Setting up Ferry](http://ferry.opencore.io/en/latest/install/client.html)
 * [Hadoop and Ferry](http://ferry.opencore.io/en/latest/examples/hadoop.html)
+* [Hadoop and Python](http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/)
