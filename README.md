@@ -78,17 +78,21 @@ In a simplified way, here's what happens:
 
 Say we have the following data:
 
-arr = [1,2,3,4,5,6]
+`arr = [1,2,3,4,5,6]`
 
 We have the following map:
 
+```
 def f(x):
 	return x*x
+```
 
 And we have the following reduce:
 
+```
 def g(x,y):
 	return x+y
+```
 
 What happens first is, the data is split across the two machines.  Since there are 6 elements, the first three go to machine one, and the second three go to machine two.  Then the map function is applied, in both machines.  Then the results would be sent to a single machine (in this case) and the reduce step would be used to combine all the results.
 
