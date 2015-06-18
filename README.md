@@ -167,7 +167,7 @@ Now we wait for our hadoop cluster to be built (exciting).  We can check the pro
 
 Once the hadoop cluster is up and running, simply type:
 
-`ferry ssh sa-[some number]`
+`sudo ferry ssh sa-[some number]` (the docs are wrong here)
 
 This will allow you to ssh into your Hadoop instance (exciting).
 
@@ -259,6 +259,10 @@ bin/hadoop jar contrib/streaming/hadoop-*streaming*.jar \
 -input /user/hduser/gutenberg/* -output /user/hduser/gutenberg-output
 ```
 
+##Alternative installation
+
+[installing Hadoop 2.6 on ubuntu](http://www.bogotobogo.com/Hadoop/BigData_hadoop_Install_on_ubuntu_single_node_cluster.php)
+[installing Hadoop 2.4 on ubuntu](http://dogdogfish.com/2014/04/26/installing-hadoop-2-4-on-ubuntu-14-04/)
 ##References:
 
 * [How Hadoop works](https://www.cs.duke.edu/courses/fall11/cps216/Lectures/how_hadoop_works.pdf)
